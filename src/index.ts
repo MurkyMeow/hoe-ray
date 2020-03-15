@@ -35,10 +35,10 @@ const keyboard = input.Keyboard.attach(document.body)
 
 ;(function loop() {
   player.move({
-    left: keyboard.checkKey('KeyA'),
-    right: keyboard.checkKey('KeyD'),
-    forward: keyboard.checkKey('KeyW'),
-    back: keyboard.checkKey('KeyS'),
+    left: keyboard.checkDir('left'),
+    right: keyboard.checkDir('right'),
+    forward: keyboard.checkDir('up'),
+    back: keyboard.checkDir('down'),
   })
 
   player.angle += (Number(keyboard.checkKey('KeyE')) - Number(keyboard.checkKey('KeyQ'))) * 0.1

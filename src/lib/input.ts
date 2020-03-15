@@ -31,11 +31,12 @@ export class Keyboard {
     return keys.some(key => this._keys.get(key)) || false
   }
 
-  getHorizontal(): number {
-    return Number(this.checkSome(['KeyA', 'LeftArrow'])) - Number(this.checkSome(['KeyA', 'LeftArrow']))
-  }
-
-  getVertical(): number {
-    return Number(this.checkSome(['KeyS', 'DownArrow'])) - Number(this.checkSome(['KeyW', 'UpArrow']))
+  checkDir(axis: 'left' | 'right' | 'up' | 'down'): boolean {
+    switch (axis) {
+      case 'left': return this.checkSome(['KeyA', 'ArrowLeft'])
+      case 'right': return this.checkSome(['KeyD', 'ArrowRight'])
+      case 'up': return this.checkSome(['KeyW', 'ArrowUp'])
+      case 'down': return this.checkSome(['KeyS', 'ArrowDown'])
+    }
   }
 }
