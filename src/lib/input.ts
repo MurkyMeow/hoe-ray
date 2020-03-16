@@ -20,7 +20,7 @@ export class Keyboard {
   }
 
   _onKeyUp = (e: KeyboardEvent) => {
-    this._keys.set(e.code, false)
+    this._keys.delete(e.code)
   }
 
   checkKey(key: string): boolean {
