@@ -10,11 +10,23 @@ module.exports = {
   },
   module: {
     rules: [
-      { test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/ },
+      {
+        test: /\.tsx?$/,
+        loader: 'ts-loader',
+      },
+      {
+        test: /\.glslx$/,
+        use: {
+          loader: 'webpack-glsl-minify',
+          options: {
+            preserveUniforms: true,
+          },
+        },
+      },
     ],
   },
   resolve: {
-    extensions: ['.ts', '.js'],
+    extensions: ['.ts', '.js', '.glslx'],
   },
   plugins: [
     new CopyPlugin(['src/index.html']),

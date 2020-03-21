@@ -2,8 +2,9 @@ import * as raycast from './lib/raycast'
 import * as map from './lib/map'
 import * as util from './lib/util'
 import * as input from './lib/input'
-import * as minimap from './lib/minimap'
-import * as scene from './lib/scene'
+// import * as minimap from './lib/minimap'
+// import * as scene from './lib/scene'
+import * as webgltest from './lib/webl-test'
 import { Player } from './lib/player'
 
 const config: raycast.ScreenConfig = {
@@ -26,30 +27,35 @@ const gameMap: map.Map = {
   ],
 }
 
-const player = new Player({ x: 50, y: 64 }, 0)
+const player = new Player({ x: 35, y: 35 }, Math.PI)
 
 const minimapCtx = util.createCanvas(config)
-const sceneCtx = util.createCanvas(config)
+// const sceneCtx = util.createCanvas(config)
 
 const keyboard = input.Keyboard.attach(document.body)
 
-;(function loop() {
-  player.move({
-    left: keyboard.checkDir('left'),
-    right: keyboard.checkDir('right'),
-    forward: keyboard.checkDir('up'),
-    back: keyboard.checkDir('down'),
-  })
+webgltest.draw({
+  gl: minimapCtx,
+  player,
+})
 
-  player.angle += (Number(keyboard.checkKey('KeyE')) - Number(keyboard.checkKey('KeyQ'))) * 0.1
+// ;(function loop() {
+//   player.move({
+//     left: keyboard.checkDir('left'),
+//     right: keyboard.checkDir('right'),
+//     forward: keyboard.checkDir('up'),
+//     back: keyboard.checkDir('down'),
+//   })
 
-  const intersections = raycast.getIntersections(config, gameMap, {
-    angle: player.angle,
-    origin: player.pos,
-  })
+//   player.angle += (Number(keyboard.checkKey('KeyE')) - Number(keyboard.checkKey('KeyQ'))) * 0.1
 
-  minimap.draw({ ctx: minimapCtx, map: gameMap, player, intersections })
-  scene.draw({ ctx: sceneCtx, map: gameMap, config, intersections })
+//   const intersections = raycast.getIntersections(config, gameMap, {
+//     angle: player.angle,
+//     origin: player.pos,
+//   })
 
-  requestAnimationFrame(loop)
-}())
+//   minimap.draw({ ctx: minimapCtx, map: gameMap, player, intersections })
+//   scene.draw({ ctx: sceneCtx, map: gameMap, config, intersections })
+
+//   requestAnimationFrame(loop)
+// }())
