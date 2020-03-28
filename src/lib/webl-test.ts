@@ -12,21 +12,16 @@ export function draw({ gl, player }: {
 
   const FOV = Math.PI / 3
 
-  const RAYS_COUNT = 100
-  const STEP = RAYS_COUNT / gl.canvas.width
+  const RAYS_COUNT = 50
+  const STEP = 2 / RAYS_COUNT
 
-  const _vertices: number[] = []
+  const _vertices: number[] = [-1, -1]
 
   for (let i = -1; i < 1; i += STEP) {
-    _vertices.push(
-      i, 1,
-      i + STEP, 1,
-      i + STEP, -1,
-      i, 1,
-      i, -1,
-      i + STEP, -1,
-    )
+    _vertices.push(i, 1, i + STEP, -1)
   }
+
+  _vertices.push(1, 1)
 
   const vertices = new Float32Array(_vertices)
 
@@ -85,7 +80,7 @@ export function draw({ gl, player }: {
     1, 0, 0, 0, 1,
     1, 1, 1, 1, 1,
   ].reduce((acc, el) => {
-    acc.push(el, 0, 0, 1)
+    acc.push(el * 255, 0, 0, 1)
     return acc
   }, [] as number[]))
 
@@ -128,10 +123,10 @@ export function draw({ gl, player }: {
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
 
   ;(function render() {
-    player.angle += 0.01
+    player.angle += 0.001
     gl.uniform1f(playerAngleLoc, player.angle)
     gl.uniform2f(playerPosLoc, player.pos.x, player.pos.y)
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 2)
-    // requestAnimationFrame(render)
+    requestAnimationFrame(render)
   }())
 }

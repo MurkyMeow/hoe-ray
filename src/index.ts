@@ -27,7 +27,7 @@ const gameMap: map.Map = {
   ],
 }
 
-const player = new Player({ x: 35, y: 35 }, Math.PI)
+const player = new Player({ x: 128, y: 128 }, 0)
 
 const minimapCtx = util.createCanvas(config)
 // const sceneCtx = util.createCanvas(config)
