@@ -22,14 +22,15 @@ void main() {
   v_color = vec4(vec3(0.149, 0.141, 0.912), 1);
   gl_Position = vec4(a_position, 0.0, 1.0);
 
-  float rayAngle = u_playerAngle + atan((u_screenWidth / 2.0 - a_position.x) / u_projectionDistance);
+  float offset = (a_position.x + 2.0) / 2.0 * u_screenWidth;
+  float rayAngle = u_playerAngle + atan(offset / u_projectionDistance);
 
   vec2 dir = vec2(cos(rayAngle), sin(rayAngle));
   vec2 step = dir * STEP_SIZE;
   vec2 pos = u_playerPos + step;
 
-  for (int i = 0; i < 100; i++) {
-    vec2 mapPos = floor(pos / TILE_SIZE * (1.0 / 5.0));
+  for (int i = 0; i < 50; i++) {
+    vec2 mapPos = floor(pos / TILE_SIZE / 5.0 + 0.0001);
     vec4 color = texture2D(u_map, mapPos);
     if (color.r > 0.5) {
       float distance = dir.y * (pos.y - u_playerPos.y) + dir.x * (pos.x - u_playerPos.x);

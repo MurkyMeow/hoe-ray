@@ -123,9 +123,8 @@ export function draw({ gl, player }: {
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
 
   ;(function render() {
-    player.angle += 0.001
+    player.angle += 0.01
     gl.uniform1f(playerAngleLoc, player.angle)
-    gl.uniform2f(playerPosLoc, player.pos.x, player.pos.y)
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 2)
     requestAnimationFrame(render)
   }())

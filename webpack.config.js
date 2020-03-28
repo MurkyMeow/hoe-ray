@@ -1,9 +1,11 @@
 const CopyPlugin = require('copy-webpack-plugin')
 const path = require('path')
 
+const production = process.env.NODE_ENV === 'production'
+
 module.exports = {
   entry: './src/index.ts',
-  mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+  mode: production ? 'production' : 'development',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bootstrap.js',
@@ -19,6 +21,7 @@ module.exports = {
         use: {
           loader: 'webpack-glsl-minify',
           options: {
+            disableMangle: !production,
             preserveUniforms: true,
           },
         },
