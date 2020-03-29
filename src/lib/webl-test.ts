@@ -96,8 +96,8 @@ export function init({ gl, map, fov }: {
   gl.uniform2f(gl.getUniformLocation(program, 'u_mapSize'), mapWidth, mapHeight)
   gl.uniform1f(gl.getUniformLocation(program, 'u_screenHeight'), gl.canvas.height)
 
-  const playerPosLoc = gl.getUniformLocation(program, 'u_playerPos')
-  const playerAngleLoc = gl.getUniformLocation(program, 'u_playerAngle')
+  const originLoc = gl.getUniformLocation(program, 'u_origin')
+  const lookAngleLoc = gl.getUniformLocation(program, 'u_lookAngle')
 
   // ==============
   // Draw
@@ -106,8 +106,8 @@ export function init({ gl, map, fov }: {
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
 
   return function draw(pov: { pos: Vec; angle: number }) {
-    gl.uniform2f(playerPosLoc, pov.pos.x, pov.pos.y)
-    gl.uniform1f(playerAngleLoc, pov.angle)
+    gl.uniform2f(originLoc, pov.pos.x, pov.pos.y)
+    gl.uniform1f(lookAngleLoc, pov.angle)
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, trianglesCount)
   }
 }

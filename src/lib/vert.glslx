@@ -1,7 +1,7 @@
 precision mediump float;
 
-uniform vec2 u_playerPos;
-uniform float u_playerAngle;
+uniform vec2 u_origin;
+uniform float u_lookAngle;
 
 uniform vec2 u_mapSize;
 uniform float u_cellSize;
@@ -23,19 +23,18 @@ const int MAX_DISTANCE = 1000;
 void main() {
   gl_Position = vec4(a_position, 0.0, 1.0);
 
-  float rayAngle = u_playerAngle + a_position.x * u_halfFov;
+  float rayAngle = u_lookAngle + a_position.x * u_halfFov;
 
-  vec2 dir = vec2(cos(rayAngle), sin(rayAngle));
-  vec2 step = dir * STEP_SIZE;
-  vec2 pos = u_playerPos + step;
+  vec2 step = vec2(cos(rayAngle), sin(rayAngle)) * STEP_SIZE;
+  vec2 pos = u_origin + step;
 
   for (int i = 0; i < MAX_DISTANCE; i++) {
     vec2 texPos = pos / u_cellSize / u_mapSize;
     vec4 color = texture2D(u_map, texPos);
     if (color.r > 0.5) {
       float distance =
-        sin(u_playerAngle) * (pos.y - u_playerPos.y) +
-        cos(u_playerAngle) * (pos.x - u_playerPos.x);
+        sin(u_lookAngle) * (pos.y - u_origin.y) +
+        cos(u_lookAngle) * (pos.x - u_origin.x);
       float height = u_cellSize / distance * u_projectionDistance / u_screenHeight;
       vec2 vertexPos = vec2(a_position.x, height * 0.5 * sign(a_position.y));
       gl_Position = vec4(vertexPos, 0.0, 1.0);
