@@ -4,9 +4,11 @@ uniform vec2 u_playerPos;
 uniform float u_playerAngle;
 
 uniform vec2 u_mapSize;
-uniform vec2 u_screenSize;
 uniform float u_cellSize;
 
+uniform float u_screenHeight;
+
+uniform float u_halfFov;
 uniform float u_projectionDistance;
 
 uniform sampler2D u_map;
@@ -15,18 +17,13 @@ attribute vec2 a_position;
 
 varying vec4 v_color;
 
-const float PI = 3.14159265359;
-
 const float STEP_SIZE = 1.0;
 const int MAX_DISTANCE = 200;
 
 void main() {
   gl_Position = vec4(a_position, 0.0, 1.0);
 
-  // float offset = (a_position.x + 2.0) / 2.0 * u_screenSize.x;
-  // float rayAngle = u_playerAngle + atan(offset / u_projectionDistance);
-
-  float rayAngle = u_playerAngle + a_position.x * (PI / 6.0);
+  float rayAngle = u_playerAngle + a_position.x * u_halfFov;
 
   vec2 dir = vec2(cos(rayAngle), sin(rayAngle));
   vec2 step = dir * STEP_SIZE;
@@ -37,7 +34,7 @@ void main() {
     vec4 color = texture2D(u_map, texPos);
     if (color.r > 0.5) {
       float distance = dir.y * (pos.y - u_playerPos.y) + dir.x * (pos.x - u_playerPos.x);
-      float height = u_cellSize / distance * u_projectionDistance / u_screenSize.y;
+      float height = u_cellSize / distance * u_projectionDistance / u_screenHeight;
       vec2 vertexPos = vec2(a_position.x, height * 0.5 * sign(a_position.y));
       gl_Position = vec4(vertexPos, 0.0, 1.0);
       v_color = vec4(color.rgb, 1);

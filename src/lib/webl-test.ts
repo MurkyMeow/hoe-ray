@@ -92,10 +92,11 @@ export function init({ gl, map, fov }: {
   // Player
   // ==============
 
+  gl.uniform1f(gl.getUniformLocation(program, 'u_halfFov'), fov / 2)
   gl.uniform1f(gl.getUniformLocation(program, 'u_projectionDistance'), gl.canvas.width / 2 / Math.tan(fov / 2))
   gl.uniform1f(gl.getUniformLocation(program, 'u_cellSize'), map.cellSize)
   gl.uniform2f(gl.getUniformLocation(program, 'u_mapSize'), mapWidth, mapHeight)
-  gl.uniform2f(gl.getUniformLocation(program, 'u_screenSize'), gl.canvas.width, gl.canvas.height)
+  gl.uniform1f(gl.getUniformLocation(program, 'u_screenHeight'), gl.canvas.height)
 
   const playerPosLoc = gl.getUniformLocation(program, 'u_playerPos')
   const playerAngleLoc = gl.getUniformLocation(program, 'u_playerAngle')
