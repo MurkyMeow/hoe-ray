@@ -1,18 +1,19 @@
-import * as vec from './vec'
+import { Map } from './map'
+import { Vec } from './vec'
+
 import fragment from './frag.glslx'
 import vertex from './vert.glslx'
 
-export function draw({ gl, player }: {
+export function init({ gl, map, fov }: {
   gl: WebGL2RenderingContext;
-  player: { pos: vec.Vec; angle: number };
+  map: Map;
+  fov: number;
 }) {
   // ==============
   // Buffer
   // ==============
 
-  const FOV = Math.PI / 3
-
-  const RAYS_COUNT = 50
+  const RAYS_COUNT = 100
   const STEP = 2 / RAYS_COUNT
 
   const _vertices: number[] = [-1, -1]
@@ -24,23 +25,20 @@ export function draw({ gl, player }: {
   _vertices.push(1, 1)
 
   const vertices = new Float32Array(_vertices)
+  const trianglesCount = vertices.length / 2
 
   const screenBuffer = gl.createBuffer()
   gl.bindBuffer(gl.ARRAY_BUFFER, screenBuffer)
   gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW)
 
   // ==============
-  // Vertex shader
+  // Shader
   // ==============
 
   const vertexShader = gl.createShader(gl.VERTEX_SHADER)
   if (!vertexShader) throw Error('Could not create a vertex shader')
   gl.shaderSource(vertexShader, vertex.sourceCode)
   gl.compileShader(vertexShader)
-
-  // ==============
-  // Fragment shader
-  // ==============
 
   const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)
   if (!fragmentShader) throw Error('Could not create a fragment shader')
@@ -70,16 +68,10 @@ export function draw({ gl, player }: {
   // Map
   // ==============
 
-  const MAP_WIDTH = 5
-  const MAP_HEIGHT = 5
+  const mapWidth = map.values[0].length
+  const mapHeight = map.values.length
 
-  const map = new Uint8Array([
-    1, 1, 1, 1, 1,
-    1, 0, 0, 0, 1,
-    1, 0, 0, 0, 1,
-    1, 0, 0, 0, 1,
-    1, 1, 1, 1, 1,
-  ].reduce((acc, el) => {
+  const mapData = new Uint8Array(map.values.flat().reduce((acc, el) => {
     acc.push(el * 255, 0, 0, 1)
     return acc
   }, [] as number[]))
@@ -87,34 +79,26 @@ export function draw({ gl, player }: {
   const texture = gl.createTexture()
   gl.bindTexture(gl.TEXTURE_2D, texture)
   // FIXME gl.ALPHA or gl.R8UI for internal format?
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, MAP_WIDTH, MAP_HEIGHT, 0, gl.RGBA, gl.UNSIGNED_BYTE, map)
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, mapWidth, mapHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, mapData)
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
 
-  const mapLoc = gl.getUniformLocation(program, 'u_map')
   gl.activeTexture(gl.TEXTURE0)
-  gl.uniform1i(mapLoc, 0)
+  gl.uniform1i(gl.getUniformLocation(program, 'u_map'), 0)
 
   // ==============
   // Player
   // ==============
 
+  gl.uniform1f(gl.getUniformLocation(program, 'u_projectionDistance'), gl.canvas.width / 2 / Math.tan(fov / 2))
+  gl.uniform1f(gl.getUniformLocation(program, 'u_cellSize'), map.cellSize)
+  gl.uniform2f(gl.getUniformLocation(program, 'u_mapSize'), mapWidth, mapHeight)
+  gl.uniform2f(gl.getUniformLocation(program, 'u_screenSize'), gl.canvas.width, gl.canvas.height)
+
   const playerPosLoc = gl.getUniformLocation(program, 'u_playerPos')
-  gl.uniform2fv(playerPosLoc, [player.pos.x, player.pos.y])
-
   const playerAngleLoc = gl.getUniformLocation(program, 'u_playerAngle')
-  gl.uniform1f(playerAngleLoc, player.angle)
-
-  const projectionDistanceLoc = gl.getUniformLocation(program, 'u_projectionDistance')
-  gl.uniform1f(projectionDistanceLoc, gl.canvas.width / 2 / Math.tan(FOV / 2))
-
-  const screenHeightLoc = gl.getUniformLocation(program, 'u_screenHeight')
-  gl.uniform1f(screenHeightLoc, gl.canvas.height)
-
-  const screenWidthLoc = gl.getUniformLocation(program, 'u_screenWidth')
-  gl.uniform1f(screenWidthLoc, gl.canvas.width)
 
   // ==============
   // Draw
@@ -122,10 +106,9 @@ export function draw({ gl, player }: {
 
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
 
-  ;(function render() {
-    player.angle += 0.01
-    gl.uniform1f(playerAngleLoc, player.angle)
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 2)
-    requestAnimationFrame(render)
-  }())
+  return function draw(pov: { pos: Vec; angle: number }) {
+    gl.uniform2f(playerPosLoc, pov.pos.x, pov.pos.y)
+    gl.uniform1f(playerAngleLoc, pov.angle)
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, trianglesCount)
+  }
 }

@@ -1,61 +1,41 @@
-import * as raycast from './lib/raycast'
-import * as map from './lib/map'
 import * as util from './lib/util'
 import * as input from './lib/input'
-// import * as minimap from './lib/minimap'
-// import * as scene from './lib/scene'
 import * as webgltest from './lib/webl-test'
 import { Player } from './lib/player'
 
-const config: raycast.ScreenConfig = {
+const player = new Player({ x: 64, y: 64 }, 0)
+
+const webglDraw = webgltest.init({
+  gl: util.createCanvas({ width: 640, height: 480 }),
   fov: Math.PI / 3,
-  width: 640,
-  height: 480,
-}
-
-const gameMap: map.Map = {
-  cellSize: 32,
-  values: [
-    [1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 1, 0, 1],
-    [1, 1, 0, 1, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 1, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 1, 0, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1],
-  ],
-}
-
-const player = new Player({ x: 0.5, y: 0.5 }, 0)
-
-const minimapCtx = util.createCanvas(config)
-// const sceneCtx = util.createCanvas(config)
+  map: {
+    cellSize: 32,
+    values: [
+      [1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 0, 0, 0, 0, 0, 0, 1],
+      [1, 0, 0, 0, 0, 1, 0, 1],
+      [1, 1, 0, 1, 0, 0, 0, 1],
+      [1, 0, 0, 0, 0, 0, 0, 1],
+      [1, 0, 1, 0, 0, 0, 0, 1],
+      [1, 0, 0, 0, 0, 1, 0, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1],
+    ],
+  },
+})
 
 const keyboard = input.Keyboard.attach(document.body)
 
-webgltest.draw({
-  gl: minimapCtx,
-  player,
-})
+;(function loop() {
+  player.move({
+    left: keyboard.checkDir('left'),
+    right: keyboard.checkDir('right'),
+    forward: keyboard.checkDir('up'),
+    back: keyboard.checkDir('down'),
+  })
 
-// ;(function loop() {
-//   player.move({
-//     left: keyboard.checkDir('left'),
-//     right: keyboard.checkDir('right'),
-//     forward: keyboard.checkDir('up'),
-//     back: keyboard.checkDir('down'),
-//   })
+  player.angle += (Number(keyboard.checkKey('KeyE')) - Number(keyboard.checkKey('KeyQ'))) * 0.1
 
-//   player.angle += (Number(keyboard.checkKey('KeyE')) - Number(keyboard.checkKey('KeyQ'))) * 0.1
+  webglDraw(player)
 
-//   const intersections = raycast.getIntersections(config, gameMap, {
-//     angle: player.angle,
-//     origin: player.pos,
-//   })
-
-//   minimap.draw({ ctx: minimapCtx, map: gameMap, player, intersections })
-//   scene.draw({ ctx: sceneCtx, map: gameMap, config, intersections })
-
-//   requestAnimationFrame(loop)
-// }())
+  requestAnimationFrame(loop)
+}())
