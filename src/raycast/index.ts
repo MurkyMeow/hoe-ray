@@ -1,8 +1,8 @@
-import { Map } from './map'
-import { Vec } from './vec'
+import { Map } from '../lib/map'
+import { Vec } from '../lib/vec'
 
-import fragment from './frag.glslx'
-import vertex from './vert.glslx'
+import fragment from './fragment.glslx'
+import vertex from './vertex.glslx'
 
 export function init({ gl, map, fov }: {
   gl: WebGL2RenderingContext;

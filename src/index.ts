@@ -1,11 +1,11 @@
 import * as util from './lib/util'
 import * as input from './lib/input'
-import * as webgltest from './lib/webl-test'
+import * as raycast from './raycast'
 import { Player } from './lib/player'
 
 const player = new Player({ x: 64, y: 64 }, 0)
 
-const webglDraw = webgltest.init({
+const drawScene = raycast.init({
   gl: util.createCanvas({ width: 640, height: 480 }),
   fov: Math.PI / 3,
   map: {
@@ -35,7 +35,7 @@ const keyboard = input.Keyboard.attach(document.body)
 
   player.angle += (Number(keyboard.checkKey('KeyE')) - Number(keyboard.checkKey('KeyQ'))) * 0.1
 
-  webglDraw(player)
+  drawScene(player)
 
   requestAnimationFrame(loop)
 }())
