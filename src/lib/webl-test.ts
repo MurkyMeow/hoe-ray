@@ -13,7 +13,7 @@ export function init({ gl, map, fov }: {
   // Buffer
   // ==============
 
-  const RAYS_COUNT = 100
+  const RAYS_COUNT = gl.canvas.width / 2
   const STEP = 2 / RAYS_COUNT
 
   const _vertices: number[] = [-1, -1]
@@ -76,15 +76,13 @@ export function init({ gl, map, fov }: {
     return acc
   }, [] as number[]))
 
-  const texture = gl.createTexture()
-  gl.bindTexture(gl.TEXTURE_2D, texture)
+  gl.bindTexture(gl.TEXTURE_2D, gl.createTexture())
   // FIXME gl.ALPHA or gl.R8UI for internal format?
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, mapWidth, mapHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, mapData)
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
-
   gl.activeTexture(gl.TEXTURE0)
   gl.uniform1i(gl.getUniformLocation(program, 'u_map'), 0)
 
