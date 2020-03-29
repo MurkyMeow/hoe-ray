@@ -18,7 +18,7 @@ attribute vec2 a_position;
 varying vec4 v_color;
 
 const float STEP_SIZE = 1.0;
-const int MAX_DISTANCE = 200;
+const int MAX_DISTANCE = 1000;
 
 void main() {
   gl_Position = vec4(a_position, 0.0, 1.0);
@@ -33,7 +33,9 @@ void main() {
     vec2 texPos = pos / u_cellSize / u_mapSize;
     vec4 color = texture2D(u_map, texPos);
     if (color.r > 0.5) {
-      float distance = dir.y * (pos.y - u_playerPos.y) + dir.x * (pos.x - u_playerPos.x);
+      float distance =
+        sin(u_playerAngle) * (pos.y - u_playerPos.y) +
+        cos(u_playerAngle) * (pos.x - u_playerPos.x);
       float height = u_cellSize / distance * u_projectionDistance / u_screenHeight;
       vec2 vertexPos = vec2(a_position.x, height * 0.5 * sign(a_position.y));
       gl_Position = vec4(vertexPos, 0.0, 1.0);
