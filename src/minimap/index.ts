@@ -35,7 +35,7 @@ export function init(gl: WebGL2RenderingContext, { map }: { map: Map }) {
   const mapHeight = map.values.length
 
   const mapData = new Uint8Array(map.values.flat().reduce((acc, el) => {
-    acc.push(el * 255, el * 255, 0, 255)
+    acc.push(0, 0, 0, el * 255)
     return acc
   }, [] as number[]))
 
@@ -61,7 +61,7 @@ export function init(gl: WebGL2RenderingContext, { map }: { map: Map }) {
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
 
   return function draw(pov: Vec) {
-    gl.uniform2f(povLoc, pov.x, pov.y)
+    gl.uniform2f(povLoc, pov.x / gl.canvas.width, pov.y / gl.canvas.height)
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, trianglesCount)
   }
 }

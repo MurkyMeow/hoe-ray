@@ -42,5 +42,5 @@ const keyboard = input.Keyboard.attach(document.body)
   drawScene(player)
   drawMap(player.pos)
 
-  // requestAnimationFrame(loop)
+  requestAnimationFrame(loop)
 }())
