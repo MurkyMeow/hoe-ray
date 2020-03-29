@@ -21,7 +21,6 @@ const float STEP_SIZE = 1.0;
 const int MAX_DISTANCE = 200;
 
 void main() {
-  v_color = vec4(vec3(0.149, 0.141, 0.912), 1);
   gl_Position = vec4(a_position, 0.0, 1.0);
 
   // float offset = (a_position.x + 2.0) / 2.0 * u_screenSize.x;
@@ -41,7 +40,7 @@ void main() {
       float height = u_cellSize / distance * u_projectionDistance / u_screenSize.y;
       vec2 vertexPos = vec2(a_position.x, height * 0.5 * sign(a_position.y));
       gl_Position = vec4(vertexPos, 0.0, 1.0);
-      v_color = vec4(color.rgb / distance * 50.0, 1);
+      v_color = vec4(color.rgb, 1);
       return;
     }
     pos += step;
