@@ -26,8 +26,10 @@ void main() {
 
   // player sight
   if (distance < LOOK_DISTANCE) {
-    float angle = atan(normalizedPos.y - u_pov.y, normalizedPos.x - u_pov.x);
-    if (angle > u_lookAngle - u_halfFov && angle < u_lookAngle + u_halfFov) {
+    float pixelAngle = atan(normalizedPos.y - u_pov.y, normalizedPos.x - u_pov.x);
+    float diff = pixelAngle - u_lookAngle;
+    float normalisedDiff = atan(sin(diff), cos(diff));
+    if (abs(normalisedDiff) < u_halfFov) {
       gl_FragColor = vec4(1, 0, 0, 1);
       return;
     }
