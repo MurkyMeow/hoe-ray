@@ -21,11 +21,10 @@ const map: Map = {
   ],
 }
 
-const drawScene = raycast
-  .init(util.createCanvas({ width: 640, height: 480 }), { fov: Math.PI / 3, map })
+const fov = Math.PI / 3
 
-const drawMap = minimap
-  .init(util.createCanvas({ width: 320, height: 240 }), { map })
+const drawScene = raycast.init(util.createCanvas({ width: 640, height: 480 }), { fov , map })
+const drawMap = minimap.init(util.createCanvas({ width: 320, height: 240 }), { fov, map })
 
 const keyboard = input.Keyboard.attach(document.body)
 
@@ -37,10 +36,10 @@ const keyboard = input.Keyboard.attach(document.body)
     back: keyboard.checkDir('down'),
   })
 
-  player.angle += (Number(keyboard.checkKey('KeyE')) - Number(keyboard.checkKey('KeyQ'))) * 0.1
+  player.setAngle(player.angle + (Number(keyboard.checkKey('KeyE')) - Number(keyboard.checkKey('KeyQ'))) * 0.1)
 
   drawScene(player)
-  drawMap(player.pos)
+  drawMap(player)
 
   requestAnimationFrame(loop)
 }())

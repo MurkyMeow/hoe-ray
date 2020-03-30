@@ -5,7 +5,7 @@ import * as util from '../lib/util'
 import fragment from './fragment.glslx'
 import vertex from './vertex.glslx'
 
-export function init(gl: WebGL2RenderingContext, { map }: { map: Map }) {
+export function init(gl: WebGL2RenderingContext, { map, fov }: { map: Map; fov: number }) {
   // just a rectangle covering the full canvas
   const vertices = [
     -1, -1,
@@ -53,6 +53,9 @@ export function init(gl: WebGL2RenderingContext, { map }: { map: Map }) {
   // ===============
 
   const povLoc = gl.getUniformLocation(program, 'u_pov')
+  const lookAngleLoc = gl.getUniformLocation(program, 'u_lookAngle')
+
+  gl.uniform1f(gl.getUniformLocation(program, 'u_halfFov'), fov / 2)
 
   // ===============
   // Draw
@@ -60,8 +63,12 @@ export function init(gl: WebGL2RenderingContext, { map }: { map: Map }) {
 
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
 
-  return function draw(pov: Vec) {
-    gl.uniform2f(povLoc, pov.x / gl.canvas.width, pov.y / gl.canvas.height)
+  const mapPixelWidth = map.cellSize * mapWidth
+  const mapPixelHeight = map.cellSize * mapHeight
+
+  return function draw({ pos, angle }: { pos: Vec; angle: number }) {
+    gl.uniform2f(povLoc, pos.x / mapPixelWidth, pos.y / mapPixelHeight)
+    gl.uniform1f(lookAngleLoc, angle)
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, trianglesCount)
   }
 }
