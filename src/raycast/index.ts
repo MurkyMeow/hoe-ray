@@ -42,7 +42,7 @@ export function init(gl: WebGL2RenderingContext, { map, fov }: { map: Map; fov: 
   const mapHeight = map.values.length
 
   const mapData = new Uint8Array(map.values.flat().reduce((acc, el) => {
-    acc.push(el * 255, 0, 0, 1)
+    acc.push(el * 255, 0, 0, 255)
     return acc
   }, [] as number[]))
 
@@ -57,14 +57,17 @@ export function init(gl: WebGL2RenderingContext, { map, fov }: { map: Map; fov: 
   gl.uniform1i(gl.getUniformLocation(program, 'u_map'), 0)
 
   // ==============
-  // Player
+  // Uniforms
   // ==============
 
   gl.uniform1f(gl.getUniformLocation(program, 'u_halfFov'), fov / 2)
-  gl.uniform1f(gl.getUniformLocation(program, 'u_projectionDistance'), gl.canvas.width / 2 / Math.tan(fov / 2))
-  gl.uniform1f(gl.getUniformLocation(program, 'u_cellSize'), map.cellSize)
-  gl.uniform2f(gl.getUniformLocation(program, 'u_mapSize'), mapWidth, mapHeight)
+  gl.uniform2f(gl.getUniformLocation(program, 'u_mapSize'), map.cellSize * mapWidth, map.cellSize * mapHeight)
   gl.uniform1f(gl.getUniformLocation(program, 'u_screenHeight'), gl.canvas.height)
+
+  const projectionDistance = gl.canvas.width / 2 / Math.tan(fov / 2)
+  const wallScale = map.cellSize * projectionDistance / gl.canvas.height
+
+  gl.uniform1f(gl.getUniformLocation(program, 'u_wallScale'), wallScale)
 
   const povLoc = gl.getUniformLocation(program, 'u_pov')
   const lookAngleLoc = gl.getUniformLocation(program, 'u_lookAngle')
