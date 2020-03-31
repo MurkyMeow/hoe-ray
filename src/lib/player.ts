@@ -29,4 +29,11 @@ export class Player {
 
     this.pos = vec.add(this.pos, movement)
   }
+
+  setAngle(angle: number): void {
+    let currentAngle = angle
+    while (currentAngle > Math.PI) currentAngle -= consts.TWO_PI
+    while (currentAngle < -Math.PI) currentAngle += consts.TWO_PI
+    this.angle = currentAngle
+  }
 }

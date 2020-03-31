@@ -1,0 +1,40 @@
+precision mediump float;
+
+uniform sampler2D u_map;
+uniform vec2 u_pov;
+uniform float u_lookAngle;
+uniform float u_halfFov;
+
+varying vec2 v_position;
+
+const float PLAYER_SIZE = 0.01;
+const float LOOK_DISTANCE = 0.3;
+
+void main() {
+  // map from [-1; 1] to [0; 1]
+  vec2 normalizedPos = (v_position + 1.0) / 2.0;
+
+  normalizedPos.y = 1.0 - normalizedPos.y;
+
+  float distance = distance(u_pov, normalizedPos);
+
+  // player
+  if (distance < PLAYER_SIZE) {
+    gl_FragColor = vec4(1, 0, 0, 1);
+    return;
+  }
+
+  // player sight
+  if (distance < LOOK_DISTANCE) {
+    float pixelAngle = atan(normalizedPos.y - u_pov.y, normalizedPos.x - u_pov.x);
+    float diff = pixelAngle - u_lookAngle;
+    float normalisedDiff = atan(sin(diff), cos(diff));
+    if (abs(normalisedDiff) < u_halfFov) {
+      gl_FragColor = vec4(1, 0, 0, 1);
+      return;
+    }
+  }
+
+  // walls and emptiness
+  gl_FragColor = texture2D(u_map, normalizedPos);
+}
