@@ -3,3 +3,8 @@ declare module '*.glslx' {
   const shader: GlslShader
   export default shader
 }
+
+declare module '*.jpg' {
+  const source: string
+  export default source
+}

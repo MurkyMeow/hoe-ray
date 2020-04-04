@@ -12,8 +12,9 @@ uniform float u_wallScale;
 uniform float u_halfFov;
 
 uniform sampler2D u_map;
+uniform sampler2D u_wallTex;
 
-attribute vec2 a_position;
+attribute vec4 a_position;
 
 varying vec4 v_color;
 
@@ -21,7 +22,7 @@ const float STEP_SIZE = 1.0;
 const int MAX_DISTANCE = 1000;
 
 void main() {
-  gl_Position = vec4(a_position, 0.0, 1.0);
+  gl_Position = vec4(a_position.xy, 0.0, 1.0);
 
   float rayAngle = u_lookAngle + a_position.x * u_halfFov;
 
@@ -37,7 +38,14 @@ void main() {
       float height = u_wallScale / distance;
       vec2 newPosition = vec2(a_position.x, height * 0.5 * sign(a_position.y));
       gl_Position = vec4(newPosition, 0.0, 1.0);
-      v_color = color;
+
+      vec2 texPos = vec2(
+        (pos.x - floor(pos.x / 32.0) * 32.0) / 32.0,
+        (a_position.y + 1.0) / 2.0
+      );
+
+      v_color = vec4(texture2D(u_wallTex, texPos).xyz, 1.0);
+
       return;
     }
     pos += step;
