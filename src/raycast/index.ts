@@ -5,7 +5,7 @@ import * as util from '../lib/util'
 import fragment from './fragment.glslx'
 import vertex from './vertex.glslx'
 
-import tex from '../tex3.jpg'
+import tex from '../tex3.png'
 
 export function init(gl: WebGL2RenderingContext, { map, fov }: { map: Map; fov: number; }) {
   // ==============
