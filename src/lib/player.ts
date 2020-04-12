@@ -1,6 +1,8 @@
 import * as vec from './vec'
 import * as consts from './consts'
 
+const SPEED = 0.04
+
 export class Player {
   constructor(
     public pos: vec.Vec,
@@ -27,7 +29,7 @@ export class Player {
 
     const movement = { x: Math.cos(angle), y: Math.sin(angle) }
 
-    this.pos = vec.add(this.pos, movement)
+    this.pos = vec.add(this.pos, vec.mult(movement, SPEED))
   }
 
   setAngle(angle: number): void {
