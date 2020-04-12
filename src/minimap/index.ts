@@ -63,11 +63,8 @@ export function init(gl: WebGL2RenderingContext, { map, fov }: { map: Map; fov: 
 
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
 
-  const mapPixelWidth = map.cellSize * mapWidth
-  const mapPixelHeight = map.cellSize * mapHeight
-
   return function draw({ pos, angle }: { pos: Vec; angle: number }) {
-    gl.uniform2f(povLoc, pos.x / mapPixelWidth, pos.y / mapPixelHeight)
+    gl.uniform2f(povLoc, pos.x / mapWidth, pos.y / mapHeight)
     gl.uniform1f(lookAngleLoc, angle)
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, trianglesCount)
   }

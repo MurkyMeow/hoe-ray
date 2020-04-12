@@ -3,10 +3,10 @@ precision mediump float;
 uniform vec2 u_pov;
 uniform float u_lookAngle;
 
-// (map columns, map rows) * cellSize
+// (map columns, map rows)
 uniform vec2 u_mapSize;
 
-// cell size * projection distance / canvas height
+// projection distance / canvas height
 uniform float u_wallScale;
 
 uniform float u_halfFov;
@@ -17,7 +17,7 @@ attribute vec4 a_position;
 
 varying vec2 v_texPosition;
 
-const float STEP_SIZE = 1.0;
+const float STEP_SIZE = 0.01;
 const int MAX_DISTANCE = 1000;
 
 void main() {

@@ -15,7 +15,7 @@ export function init(gl: WebGL2RenderingContext, { map, fov }: { map: Map; fov: 
   const RAYS_COUNT = gl.canvas.width / 2
   const STEP = 2 / RAYS_COUNT
 
-  const vertices: number[] = [-1, -1]
+  const vertices = [-1, -1]
   for (let i = -1; i < 1; i += STEP) vertices.push(i, 1, i + STEP, -1)
   vertices.push(1, 1)
 
@@ -70,11 +70,11 @@ export function init(gl: WebGL2RenderingContext, { map, fov }: { map: Map; fov: 
   // ==============
 
   gl.uniform1f(gl.getUniformLocation(program, 'u_halfFov'), fov / 2)
-  gl.uniform2f(gl.getUniformLocation(program, 'u_mapSize'), map.cellSize * mapWidth, map.cellSize * mapHeight)
+  gl.uniform2f(gl.getUniformLocation(program, 'u_mapSize'), mapWidth, mapHeight)
   gl.uniform1f(gl.getUniformLocation(program, 'u_screenHeight'), gl.canvas.height)
 
   const projectionDistance = gl.canvas.width / 2 / Math.tan(fov / 2)
-  const wallScale = map.cellSize * projectionDistance / gl.canvas.height
+  const wallScale = projectionDistance / gl.canvas.height
 
   gl.uniform1f(gl.getUniformLocation(program, 'u_wallScale'), wallScale)
 

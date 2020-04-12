@@ -5,10 +5,9 @@ import * as minimap from './minimap'
 import { Player } from './lib/player'
 import { Map } from './lib/map'
 
-const player = new Player({ x: 64, y: 64 }, 0)
+const player = new Player({ x: 1, y: 1 }, 0)
 
 const map: Map = {
-  cellSize: 32,
   values: [
     [1, 1, 1, 1, 1, 1, 1, 1],
     [1, 0, 0, 0, 0, 0, 0, 1],
