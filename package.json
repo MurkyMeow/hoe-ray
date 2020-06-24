@@ -9,6 +9,7 @@
   "dependencies": {},
   "devDependencies": {
     "copy-webpack-plugin": "^5.1.1",
+    "file-loader": "^6.0.0",
     "tape-modern": "^1.1.2",
     "ts-loader": "^6.2.2",
     "typescript": "^3.8.3",

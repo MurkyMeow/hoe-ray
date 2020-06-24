@@ -5,7 +5,9 @@ import * as util from '../lib/util'
 import fragment from './fragment.glslx'
 import vertex from './vertex.glslx'
 
-export function init(gl: WebGL2RenderingContext, { map, fov }: { map: Map; fov: number }) {
+import tex from '../tex3.png'
+
+export function init(gl: WebGL2RenderingContext, { map, fov }: { map: Map; fov: number; }) {
   // ==============
   // Buffer
   // ==============
@@ -54,7 +56,14 @@ export function init(gl: WebGL2RenderingContext, { map, fov }: { map: Map; fov: 
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
   gl.activeTexture(gl.TEXTURE0)
-  gl.uniform1i(gl.getUniformLocation(program, 'u_map'), 0)
+
+  // ==============
+  // Texture
+  // ==============
+
+  util.loadTexture(gl, { url: tex }).then(() => {
+    gl.uniform1i(gl.getUniformLocation(program, 'u_wallTex'), 1)
+  })
 
   // ==============
   // Uniforms
