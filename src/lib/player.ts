@@ -1,41 +1,47 @@
-import * as vec from './vec'
-import * as consts from './consts'
+import { Dir } from "./types";
+import * as vec from "./vec";
 
-const SPEED = 0.04
+const SPEED = 0.04;
 
 export class Player {
-  constructor(
-    public pos: vec.Vec,
-    public angle: number
-  ) {
+  public pos: vec.Vec;
+  public dir: vec.Vec;
+
+  constructor(pos: vec.Vec, angle: number) {
+    this.pos = pos;
+    this.dir = { x: Math.cos(angle), y: Math.sin(angle) };
   }
 
-  move(dirs: {
-    forward?: boolean;
-    back?: boolean;
-    left?: boolean;
-    right?: boolean;
-  }): void {
-    let dangle = consts.HALF_PI
+  move(dir: Dir): void {
+    const dx = this.dir.x * SPEED;
+    const dy = this.dir.y * SPEED;
 
-    if (dirs.left) dangle -= consts.HALF_PI
-    if (dirs.right) dangle += consts.HALF_PI
-    if (dirs.forward || dirs.back) dangle = (dangle + consts.HALF_PI) / 2
-    if (dirs.back) dangle = -dangle
-
-    if (!dirs.forward && dangle === consts.HALF_PI) return
-
-    const angle = this.angle + dangle - consts.HALF_PI
-
-    const movement = { x: Math.cos(angle), y: Math.sin(angle) }
-
-    this.pos = vec.add(this.pos, vec.mult(movement, SPEED))
+    if (dir & Dir.left) {
+      this.pos.x += dy;
+      this.pos.y -= dx;
+    }
+    if (dir & Dir.right) {
+      this.pos.x -= dy;
+      this.pos.y += dx;
+    }
+    if (dir & Dir.forward) {
+      this.pos.x += dx;
+      this.pos.y += dy;
+    }
+    if (dir & Dir.back) {
+      this.pos.x -= dx;
+      this.pos.y -= dy;
+    }
   }
 
-  setAngle(angle: number): void {
-    let currentAngle = angle
-    while (currentAngle > Math.PI) currentAngle -= consts.TWO_PI
-    while (currentAngle < -Math.PI) currentAngle += consts.TWO_PI
-    this.angle = currentAngle
+  rotate_by(angle: number): void {
+    const dir_x = this.dir.x;
+    const dir_y = this.dir.y;
+
+    const dx = Math.cos(angle);
+    const dy = Math.sin(angle);
+
+    this.dir.x = dir_x * dx - dir_y * dy;
+    this.dir.y = dir_x * dy + dir_y * dx;
   }
 }

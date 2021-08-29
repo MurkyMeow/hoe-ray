@@ -6,6 +6,7 @@
     "target": "esnext",
     "moduleResolution": "node",
     "esModuleInterop": true,
+    "preserveConstEnums": true,
     "allowSyntheticDefaultImports": true,
   },
 }

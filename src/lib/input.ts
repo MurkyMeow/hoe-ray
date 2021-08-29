@@ -1,42 +1,44 @@
+import { Key, Dir } from "./types";
+
 export class Keyboard {
-  _keys = new Map<string, boolean>()
+  _keys: Record<string, number> = {};
 
   private constructor(public readonly target: HTMLElement) {
-    target.addEventListener('keydown', this._onKeyDown)
-    target.addEventListener('keyup', this._onKeyUp)
+    target.addEventListener("keydown", this._onKeyDown);
+    target.addEventListener("keyup", this._onKeyUp);
   }
 
   static attach(target: HTMLElement) {
-    return new Keyboard(target)
+    return new Keyboard(target);
   }
 
   detach() {
-    this.target.removeEventListener('keydown', this._onKeyDown)
-    this.target.removeEventListener('keyup', this._onKeyUp)
+    this.target.removeEventListener("keydown", this._onKeyDown);
+    this.target.removeEventListener("keyup", this._onKeyUp);
   }
 
   _onKeyDown = (e: KeyboardEvent) => {
-    this._keys.set(e.code, true)
-  }
+    this._keys[e.code] = 1;
+  };
 
   _onKeyUp = (e: KeyboardEvent) => {
-    this._keys.delete(e.code)
+    delete this._keys[e.code];
+  };
+
+  checkKey(key: string): number {
+    return this._keys[key] || 0;
   }
 
-  checkKey(key: string): boolean {
-    return this._keys.get(key) || false
-  }
-
-  checkSome(keys: string[]): boolean {
-    return keys.some(key => this._keys.get(key)) || false
-  }
-
-  checkDir(axis: 'left' | 'right' | 'up' | 'down'): boolean {
-    switch (axis) {
-      case 'left': return this.checkSome(['KeyA', 'ArrowLeft'])
-      case 'right': return this.checkSome(['KeyD', 'ArrowRight'])
-      case 'up': return this.checkSome(['KeyW', 'ArrowUp'])
-      case 'down': return this.checkSome(['KeyS', 'ArrowDown'])
+  check_dir(dir: Dir): number {
+    switch (dir) {
+      case Dir.left:
+        return this.checkKey(Key.A) || this.checkKey(Key.ArrowLeft);
+      case Dir.right:
+        return this.checkKey(Key.D) || this.checkKey(Key.ArrowRight);
+      case Dir.forward:
+        return this.checkKey(Key.W) || this.checkKey(Key.ArrowUp);
+      case Dir.back:
+        return this.checkKey(Key.S) || this.checkKey(Key.ArrowDown);
     }
   }
 }
