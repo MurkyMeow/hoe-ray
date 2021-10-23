@@ -5,12 +5,16 @@ import * as util from "../lib/util";
 import fragment from "./fragment.glslx";
 import vertex from "./vertex.glslx";
 
-import tex from "../tex3.png";
+export interface RaycastOptions {
+  map: Map;
+  fov: number;
+  tiles_url: string;
+  tiles_size: [number, number];
+}
 
-export function init(
-  gl: WebGL2RenderingContext,
-  { map, fov }: { map: Map; fov: number }
-) {
+export function init(gl: WebGL2RenderingContext, options: RaycastOptions) {
+  const { map, fov, tiles_url, tiles_size } = options;
+
   // ==============
   // Buffer
   // ==============
@@ -48,7 +52,7 @@ export function init(
 
   const mapData = new Uint8Array(
     map.values.flat().reduce((acc, el) => {
-      acc.push(el * 255, 0, 0, 255);
+      acc.push(el, 0, 0, 0);
       return acc;
     }, [] as number[])
   );
@@ -76,8 +80,13 @@ export function init(
   // Texture
   // ==============
 
-  util.loadTexture(gl, { url: tex }).then(() => {
-    gl.uniform1i(gl.getUniformLocation(program, "wall_tex"), 1);
+  util.loadTexture(gl, { url: tiles_url }).then(() => {
+    gl.uniform1i(gl.getUniformLocation(program, "tiles_tex"), 1);
+    gl.uniform2f(
+      gl.getUniformLocation(program, "tiles_size"),
+      tiles_size[0],
+      tiles_size[1]
+    );
   });
 
   // ==============

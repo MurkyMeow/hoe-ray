@@ -1,9 +1,9 @@
 precision mediump float;
 
-uniform sampler2D wall_tex;
+uniform sampler2D tiles_tex;
 
 varying vec2 tex_pos;
 
 void main() {
-  gl_FragColor = texture2D(wall_tex, tex_pos);
+  gl_FragColor = texture2D(tiles_tex, tex_pos);
 }

@@ -3,6 +3,7 @@ precision mediump float;
 uniform vec2 pov;
 uniform vec2 lookdir;
 uniform vec2 map_size; // (map columns, map rows)
+uniform vec2 tiles_size; // (tiles columns, tiles rows)
 
 uniform float wall_scale; // projection distance / canvas height
 
@@ -33,15 +34,18 @@ void main() {
     map_pos += map_step * side;
     side_dist += side_step * side;
 
-    vec4 color = texture2D(map, map_pos / map_size);
+    float wall_id = texture2D(map, map_pos / map_size).r * 255.0 - 1.0;
 
-    if (color.r > 0.5) {
+    if (wall_id > -1.0) {
       float hitDist = length((map_pos - pov + 0.5 - map_step * 0.5) / ray_dir * side);
       float hitX = fract(length((pov + hitDist * ray_dir) * side.yx));
       float lineHeight = wall_scale / hitDist;
 
+      float tile_x = mod(wall_id, tiles_size.x) + hitX;
+      float tile_y = floor(wall_id / tiles_size.x) + (0.5 - vert_pos.y * 0.5);
+
       gl_Position.y = lineHeight * 0.5 * sign(vert_pos.y);
-      tex_pos = vec2(hitX, 0.5 - vert_pos.y * 0.5);
+      tex_pos = vec2(tile_x, tile_y) / tiles_size;
 
       break;
     }

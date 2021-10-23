@@ -5,18 +5,20 @@ import { Player } from "./lib/player";
 import { Map } from "./lib/map";
 import { Dir, Key } from "./lib/types";
 
+import tiles_url from "./tiles.png";
+
 const player = new Player({ x: 1, y: 1 }, 0);
 
 const map: Map = {
   values: [
-    [1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 1, 0, 1],
-    [1, 1, 0, 1, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 1, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 1, 0, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 8, 8, 8, 8, 6, 6, 6],
+    [1, 0, 0, 0, 0, 0, 0, 5],
+    [1, 0, 0, 0, 0, 1, 0, 5],
+    [1, 1, 4, 1, 0, 0, 0, 5],
+    [1, 0, 4, 0, 0, 0, 0, 4],
+    [1, 0, 4, 0, 0, 0, 0, 4],
+    [1, 0, 0, 0, 0, 1, 0, 4],
+    [1, 1, 1, 3, 3, 11, 11, 11],
   ],
 };
 
@@ -25,6 +27,8 @@ const fov = Math.PI / 3;
 const drawScene = raycast.init(util.createCanvas({ width: 480, height: 480 }), {
   fov,
   map,
+  tiles_url,
+  tiles_size: [8, 4],
 });
 
 const keyboard = input.Keyboard.attach(document.body);
